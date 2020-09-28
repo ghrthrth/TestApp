@@ -5,34 +5,38 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+import static app.Connector.LOG;
+
 public class DBWorker {
-    public DBWorker(){
+    public DBWorker() {
     }
 
-    public static void createStatement(final Connection connection) throws SQLException{
+    public static void createStatement(final Connection connection) {
         final String quitWord = "quit";
         StringBuilder query = new StringBuilder();
-        System.out.println("Create statement");
-        Statement statement = connection.createStatement();
-        Scanner in = new Scanner(System.in);
-        System.out.println("Enter query: ");
-        while (statement != null) {
-            try{
+        LOG.info("Create statement");
+        LOG.info("Enter query: ");
+        try (Statement statement = connection.createStatement();
+             Scanner in = new Scanner(System.in)) {
+            while (!statement.isClosed()) {
                 query.append(in.nextLine());
-
-                if (query.toString().equals(quitWord)){
-                    System.out.println("Close program");
+                if (query == null) {
+                    LOG.info("Statement is null!");
+                } else if (query.toString().equals(quitWord)) {
+                    LOG.info("Close program");
                     statement.close();
                     break;
+                } else {
+                    statement.execute(String.valueOf(query));
                 }
-                if (query.charAt(query.length() - 1) == ';'){
+
+                if (query.charAt(query.length() - 1) == ';') {
                     query = new StringBuilder();
-                    System.out.println("Success! Enter next query or type 'quit' to stop the program");
+                    LOG.info("Success! Enter next query or type 'quit' to stop the program");
                 }
-            } catch (SQLException e) {
-                System.out.println("Execute error! Check the syntax!");
             }
+        } catch (final SQLException e) {
+            LOG.error("Execute error! Check the syntax!", e);
         }
-        in.close();
     }
 }
