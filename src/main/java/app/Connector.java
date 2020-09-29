@@ -1,8 +1,10 @@
 package app;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.apache.log4j.Logger;
 
 import java.io.Closeable;
@@ -10,18 +12,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter @Setter
 @NoArgsConstructor
 public class Connector implements Closeable {
 
     public static final Logger LOG = Logger.getLogger(Connector.class);
 
-    private Connection con;
+    Connection con;
 
-    private String url;
-    private String user;
-    private String pass;
+    String url;
+    String user;
+    String pass;
 
     public Connection connect(final String url, final String user, final String pass) throws Exception {
 
