@@ -1,23 +1,44 @@
 package app;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 
+import java.io.Closeable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Connector {
+@Getter @Setter
+public class Connector implements Closeable {
+
     public static final Logger LOG = Logger.getLogger(Connector.class);
 
-    private static String url;
-    private static String user;
-    private static String pass;
+    public Connection con;
 
-    public static void createConnection() {
+    private String url;
+    private String user;
+    private String pass;
+
+    public Connection connect(final String url, final String user, final String pass) throws Exception {
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (final Throwable e) {
+            LOG.error("No database", e);
+        }
+
+        return DriverManager.getConnection(url, user, pass);
+    }
+
+    public void createConnection() {
         fillConnectionData();
     }
 
-    private static void fillConnectionData() {
+    public void fillConnectionData() {
         try (Scanner in = new Scanner(System.in);
-             Database db = new Database()) {
+             Connector db = new Connector()) {
 
             System.out.println("writing USER: ");
             setUser(in.nextLine());
@@ -26,8 +47,8 @@ public class Connector {
             System.out.println("written URL: ");
             setUrl(in.nextLine());
 
-            if (getUser() != null && getPass() != null && url != null) {
-                DBWorker.createStatement(db.connect(getUrl(), getPass(), getUser()));
+            if (getUser() != null && getPass() != null && getUrl() != null) {
+                DBWorker.createStatement(db.connect(getUrl(), getUser(), getPass()));
             }
 
         } catch (Exception e) {
@@ -35,27 +56,14 @@ public class Connector {
         }
     }
 
-    public static String getUrl() {
-        return url;
-    }
-
-    public static void setUrl(String url) {
-        Connector.url = url;
-    }
-
-    public static String getUser() {
-        return user;
-    }
-
-    public static void setUser(String user) {
-        Connector.user = user;
-    }
-
-    public static String getPass() {
-        return pass;
-    }
-
-    public static void setPass(String pass) {
-        Connector.pass = pass;
+    @Override
+    public void close() {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (final SQLException e) {
+                LOG.error(e);
+            }
+        }
     }
 }

@@ -3,5 +3,5 @@ package app;
 public class Runner {
 
     public static void main(String[] args) {
-        Connector.createConnection();
+        new Connector().createConnection();
     }}
