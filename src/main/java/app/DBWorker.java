@@ -1,6 +1,5 @@
 package app;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -15,26 +14,21 @@ public class DBWorker {
     }
 
     public static void createStatement(final Connector connector) {
-        final Connection connection = connector.getCon();
-        StringBuilder query = new StringBuilder();
         LOG.info("Create statement");
         LOG.info("Enter query: ");
-        try ( Statement statement = connection.createStatement();
+        try (final Statement statement = connector.getCon().createStatement();
              Scanner in = new Scanner(System.in)) {
             while (!statement.isClosed()) {
+                StringBuilder query = new StringBuilder();
                 query.append(in.nextLine());
-                if (query == null) {
-                    LOG.info("Statement is null!");
-                } else if (query.toString().equals(QUIT_WORD)) {
+                if (query.toString().equals(QUIT_WORD)) {
                     LOG.info("Close program");
-                    statement.close();
                     break;
                 } else {
                     statement.execute(String.valueOf(query));
                 }
 
                 if (query.charAt(query.length() - 1) == ';') {
-                    query = new StringBuilder();
                     LOG.info("Success! Enter next query or type 'quit' to stop the program");
                 }
             }

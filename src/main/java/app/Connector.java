@@ -36,25 +36,26 @@ public class Connector implements Closeable {
         return DriverManager.getConnection(url, user, pass);
     }
 
-    public void createConnection() {
-        fillConnectionData();
+    public void createConnection() throws Exception {
+        Connector connector = new Connector();
+        fillConnectionData(connector);
+        connector.setCon(connect(connector.getUrl(), connector.getUser(), connector.getPass()));
+        DBWorker.createStatement(connector);
     }
 
-    public void fillConnectionData() {
-        try (Scanner in = new Scanner(System.in);
-             Connector db = new Connector()) {
-
+    private void fillConnectionData(final Connector connector) {
+        try {
+            Scanner in = new Scanner(System.in);
             LOG.info("writing USER: ");
-            db.setUser(in.nextLine());
+            connector.setUser(in.nextLine());
             LOG.info("writing PASS: ");
-            db.setPass(in.nextLine());
+            connector.setPass(in.nextLine());
             LOG.info("written URL: ");
-            db.setUrl(in.nextLine());
+            connector.setUrl(in.nextLine());
 
-            if (!isNull(getUrl(), getPass(), getUser()) && !isEmpty(getUrl(), getPass(), getUser())) {
-                db.setCon(db.connect(db.getUrl(), db.getUser(), db.getPass()));
-                DBWorker.createStatement(db);
-                LOG.info("create statement....");
+            if (!isNull(connector.getUrl(), connector.getPass(), connector.getUser())
+                    && !isEmpty(connector.getUrl(), connector.getPass(), connector.getUser())) {
+                LOG.info("Data successfully filled");
             }
 
         } catch (final Exception e) {
