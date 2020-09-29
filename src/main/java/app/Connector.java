@@ -39,8 +39,7 @@ public class Connector implements Closeable {
     public void createConnection() throws Exception {
         Connector connector = new Connector();
         fillConnectionData(connector);
-        connector.setCon(connect(connector.getUrl(), connector.getUser(), connector.getPass()));
-        DBWorker.createStatement(connector);
+        connector.setCon(connect(connector.url, connector.user, connector.pass));
     }
 
     private void fillConnectionData(final Connector connector) {
@@ -53,8 +52,8 @@ public class Connector implements Closeable {
             LOG.info("written URL: ");
             connector.setUrl(in.nextLine());
 
-            if (!isNull(connector.getUrl(), connector.getPass(), connector.getUser())
-                    && !isEmpty(connector.getUrl(), connector.getPass(), connector.getUser())) {
+            if (!isNull(connector.url, connector.pass, connector.user)
+                    && !isEmpty(connector.url, connector.pass, connector.user)) {
                 LOG.info("Data successfully filled");
             }
 
