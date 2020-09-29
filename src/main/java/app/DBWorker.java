@@ -11,7 +11,8 @@ public class DBWorker {
     public DBWorker() {
     }
 
-    public static void createStatement(final Connection connection) {
+    public static void createStatement(final Connector connector) {
+        final Connection connection = connector.getCon();
         final String quitWord = "quit";
         StringBuilder query = new StringBuilder();
         LOG.info("Create statement");

@@ -1,6 +1,7 @@
 package app;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 
@@ -11,11 +12,12 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 @Getter @Setter
+@NoArgsConstructor
 public class Connector implements Closeable {
 
     public static final Logger LOG = Logger.getLogger(Connector.class);
 
-    public Connection con;
+    private Connection con;
 
     private String url;
     private String user;
@@ -40,27 +42,28 @@ public class Connector implements Closeable {
         try (Scanner in = new Scanner(System.in);
              Connector db = new Connector()) {
 
-            System.out.println("writing USER: ");
-            setUser(in.nextLine());
-            System.out.println("writing PASS: ");
-            setPass(in.nextLine());
-            System.out.println("written URL: ");
-            setUrl(in.nextLine());
+            LOG.info("writing USER: ");
+            db.setUser(in.nextLine());
+            LOG.info("writing PASS: ");
+            db.setPass(in.nextLine());
+            LOG.info("written URL: ");
+            db.setUrl(in.nextLine());
 
-            if (getUser() != null && getPass() != null && getUrl() != null) {
-                DBWorker.createStatement(db.connect(getUrl(), getUser(), getPass()));
+            if (db.getUser() != null && db.getPass() != null && db.getUrl() != null) {
+                db.setCon(db.connect(db.getUrl(), db.getUser(), db.getPass()));
+                DBWorker.createStatement(db);
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error(e);
         }
     }
 
     @Override
     public void close() {
-        if (con != null) {
+        if (getCon() != null) {
             try {
-                con.close();
+                getCon().close();
             } catch (final SQLException e) {
                 LOG.error(e);
             }
