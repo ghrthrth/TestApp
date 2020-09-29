@@ -8,12 +8,14 @@ import java.util.Scanner;
 import static app.Connector.LOG;
 
 public class DBWorker {
+
+    private final static String QUIT_WORD = "quit";
+
     public DBWorker() {
     }
 
     public static void createStatement(final Connector connector) {
         final Connection connection = connector.getCon();
-        final String quitWord = "quit";
         StringBuilder query = new StringBuilder();
         LOG.info("Create statement");
         LOG.info("Enter query: ");
@@ -23,7 +25,7 @@ public class DBWorker {
                 query.append(in.nextLine());
                 if (query == null) {
                     LOG.info("Statement is null!");
-                } else if (query.toString().equals(quitWord)) {
+                } else if (query.toString().equals(QUIT_WORD)) {
                     LOG.info("Close program");
                     statement.close();
                     break;

@@ -51,7 +51,7 @@ public class Connector implements Closeable {
             LOG.info("written URL: ");
             db.setUrl(in.nextLine());
 
-            if (db.getUser() != null && db.getPass() != null && db.getUrl() != null) {
+            if (!isNull(getUrl(), getPass(), getUser()) && !isEmpty(getUrl(), getPass(), getUser())) {
                 db.setCon(db.connect(db.getUrl(), db.getUser(), db.getPass()));
                 DBWorker.createStatement(db);
                 LOG.info("create statement....");
@@ -60,6 +60,14 @@ public class Connector implements Closeable {
         } catch (final Exception e) {
             LOG.error(e);
         }
+    }
+
+    public static boolean isEmpty(String url, String pass, String user) {
+        return url.isEmpty() && pass.isEmpty() && user.isEmpty();
+    }
+
+    public static boolean isNull(String url, String pass, String user) {
+        return user == null && pass == null && url == null;
     }
 
     @Override
