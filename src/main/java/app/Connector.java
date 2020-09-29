@@ -52,6 +52,7 @@ public class Connector implements Closeable {
             if (db.getUser() != null && db.getPass() != null && db.getUrl() != null) {
                 db.setCon(db.connect(db.getUrl(), db.getUser(), db.getPass()));
                 DBWorker.createStatement(db);
+                LOG.info("create statement....");
             }
 
         } catch (final Exception e) {

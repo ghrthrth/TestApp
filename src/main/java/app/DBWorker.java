@@ -17,7 +17,7 @@ public class DBWorker {
         StringBuilder query = new StringBuilder();
         LOG.info("Create statement");
         LOG.info("Enter query: ");
-        try (Statement statement = connection.createStatement();
+        try ( Statement statement = connection.createStatement();
              Scanner in = new Scanner(System.in)) {
             while (!statement.isClosed()) {
                 query.append(in.nextLine());
