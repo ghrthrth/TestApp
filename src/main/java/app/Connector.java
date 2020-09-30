@@ -12,8 +12,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Connector implements Closeable {
 
@@ -24,22 +26,39 @@ public class Connector implements Closeable {
     String url;
     String user;
     String pass;
+    String select;
 
-    public Connection connect(final String url, final String user, final String pass) throws Exception {
+    private static boolean isEmpty(String url, String pass, String user) {
+        return url.isEmpty() && pass.isEmpty() && user.isEmpty();
+    }
+
+    private static boolean isNull(String url, String pass, String user) {
+        return user == null && pass == null && url == null;
+    }
+
+    public Connection setDBCConnection(final String url, final String user, final String pass)
+            throws ClassNotFoundException, LinkageError, SQLException {
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (final Throwable e) {
+            if (select.equals("1")) {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } else {
+                Class.forName("org.postgresql.Driver");
+            }
+        } catch (final ClassNotFoundException | LinkageError e) {
             LOG.error("No database", e);
+            throw e;
+        } catch (final Exception e) {
+            System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
+            throw e;
         }
 
         return DriverManager.getConnection(url, user, pass);
     }
 
-    public void createConnection() throws Exception {
-        Connector connector = new Connector();
+    public void createConnection(final Connector connector) throws Exception {
         fillConnectionData(connector);
-        connector.setCon(connect(connector.url, connector.user, connector.pass));
+        connector.setCon(setDBCConnection(connector.url, connector.user, connector.pass));
     }
 
     private void fillConnectionData(final Connector connector) {
@@ -49,6 +68,9 @@ public class Connector implements Closeable {
             connector.setUser(in.nextLine());
             LOG.info("writing PASS: ");
             connector.setPass(in.nextLine());
+            LOG.info("Written number 1 if you want to select MySQL," +
+                    "or any number if you want to select PostgreSQL");
+            connector.setSelect(in.nextLine());
             LOG.info("written URL: ");
             connector.setUrl(in.nextLine());
 
@@ -60,14 +82,6 @@ public class Connector implements Closeable {
         } catch (final Exception e) {
             LOG.error(e);
         }
-    }
-
-    public static boolean isEmpty(String url, String pass, String user) {
-        return url.isEmpty() && pass.isEmpty() && user.isEmpty();
-    }
-
-    public static boolean isNull(String url, String pass, String user) {
-        return user == null && pass == null && url == null;
     }
 
     @Override
