@@ -28,12 +28,12 @@ public class Connector implements Closeable {
     String pass;
     String select;
 
-    private static boolean isEmpty(String url, String pass, String user) {
-        return url.isEmpty() && pass.isEmpty() && user.isEmpty();
+    private static boolean isEmpty(String url, String pass, String user, String select) {
+        return url.isEmpty() && pass.isEmpty() && user.isEmpty() && select.isEmpty();
     }
 
-    private static boolean isNull(String url, String pass, String user) {
-        return user == null && pass == null && url == null;
+    private static boolean isNull(String url, String pass, String user, String select) {
+        return user == null && pass == null && url == null && select == null;
     }
 
     public Connection setDBCConnection(final String url, final String user, final String pass, final String select)
@@ -77,8 +77,8 @@ public class Connector implements Closeable {
             LOG.info("writing PASS: ");
             connector.setPass(in.nextLine());
 
-            if (!isNull(connector.url, connector.pass, connector.user)
-                    && !isEmpty(connector.url, connector.pass, connector.user)) {
+            if (!isNull(connector.url, connector.pass, connector.user, connector.select)
+                    && !isEmpty(connector.url, connector.pass, connector.user, connector.select)) {
                 LOG.info("Data successfully filled");
             }
 
