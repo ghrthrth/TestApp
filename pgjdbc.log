@@ -1,0 +1,39 @@
+сен 30, 2020 1:08:58 PM org.postgresql.Driver connect
+FINE: Connecting with URL: jdbc:postgresql://localhost:5432/test?loggerLevel=TRACE&loggerFile=pgjdbc.log
+сен 30, 2020 1:08:58 PM org.postgresql.jdbc.PgConnection <init>
+FINE: PostgreSQL JDBC Driver 42.1.4
+сен 30, 2020 1:08:58 PM org.postgresql.jdbc.PgConnection setDefaultFetchSize
+FINE:   setDefaultFetchSize = 0
+сен 30, 2020 1:08:58 PM org.postgresql.jdbc.PgConnection setPrepareThreshold
+FINE:   setPrepareThreshold = 5
+сен 30, 2020 1:08:58 PM org.postgresql.core.v3.ConnectionFactoryImpl openConnectionImpl
+FINE: Trying to establish a protocol version 3 connection to localhost:5432
+сен 30, 2020 1:08:58 PM org.postgresql.core.Encoding <init>
+FINEST: Creating new Encoding windows-1251 with fastASCIINumbers true
+сен 30, 2020 1:08:58 PM org.postgresql.core.Encoding <init>
+FINEST: Creating new Encoding UTF-8 with fastASCIINumbers true
+сен 30, 2020 1:08:58 PM org.postgresql.core.Encoding <init>
+FINEST: Creating new Encoding UTF-8 with fastASCIINumbers true
+сен 30, 2020 1:08:58 PM org.postgresql.core.v3.ConnectionFactoryImpl openConnectionImpl
+FINE: Receive Buffer Size is 65 536
+сен 30, 2020 1:08:58 PM org.postgresql.core.v3.ConnectionFactoryImpl openConnectionImpl
+FINE: Send Buffer Size is 65 536
+сен 30, 2020 1:08:58 PM org.postgresql.core.v3.ConnectionFactoryImpl sendStartupPacket
+FINEST:  FE=> StartupPacket(user=postgres, database=test, client_encoding=UTF8, DateStyle=ISO, TimeZone=Europe/Moscow, extra_float_digits=2)
+сен 30, 2020 1:08:58 PM org.postgresql.core.v3.ConnectionFactoryImpl doAuthentication
+FINEST:  <=BE AuthenticationReq (unsupported type 10)
+сен 30, 2020 1:08:58 PM org.postgresql.Driver connect
+SEVERE: Connection error: 
+org.postgresql.util.PSQLException: Тип аутентификации 10 не поддерживается. Проверьте если вы сконфигурировали файл pg_hba.conf чтобы включить IP-адреса клиентов или подсеть. Также удостовертесь что он использует схему аутентификации поддерживаемую драйвером.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:614)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:222)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:194)
+	at org.postgresql.Driver.makeConnection(Driver.java:450)
+	at org.postgresql.Driver.connect(Driver.java:252)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:247)
+	at app.Connector.setDBCConnection(Connector.java:56)
+	at app.Connector.createConnection(Connector.java:61)
+	at app.Runner.main(Runner.java:9)
+

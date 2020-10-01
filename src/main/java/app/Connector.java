@@ -36,9 +36,8 @@ public class Connector implements Closeable {
         return user == null && pass == null && url == null;
     }
 
-    public Connection setDBCConnection(final String url, final String user, final String pass)
+    public Connection setDBCConnection(final String url, final String user, final String pass, final String select)
             throws ClassNotFoundException, LinkageError, SQLException {
-
         try {
             if (select.equals("1")) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -58,21 +57,25 @@ public class Connector implements Closeable {
 
     public void createConnection(final Connector connector) throws Exception {
         fillConnectionData(connector);
-        connector.setCon(setDBCConnection(connector.url, connector.user, connector.pass));
+        connector.setCon(setDBCConnection(connector.url, connector.user, connector.pass, connector.select));
     }
 
     private void fillConnectionData(final Connector connector) {
         try {
             Scanner in = new Scanner(System.in);
-            LOG.info("writing USER: ");
-            connector.setUser(in.nextLine());
-            LOG.info("writing PASS: ");
-            connector.setPass(in.nextLine());
             LOG.info("Written number 1 if you want to select MySQL," +
                     "or any number if you want to select PostgreSQL");
             connector.setSelect(in.nextLine());
             LOG.info("written URL: ");
             connector.setUrl(in.nextLine());
+            while (connector.getSelect().equals("1") && connector.getUrl().contains("jdbc:postgresql")) {
+                LOG.warn("Wrong Url, write again");
+                connector.setUrl(in.nextLine());
+            }
+            LOG.info("writing USER: ");
+            connector.setUser(in.nextLine());
+            LOG.info("writing PASS: ");
+            connector.setPass(in.nextLine());
 
             if (!isNull(connector.url, connector.pass, connector.user)
                     && !isEmpty(connector.url, connector.pass, connector.user)) {
